@@ -196,10 +196,6 @@
         if (e.keyCode === 27 && self._options.exitOnEsc == true) {
           //escape key pressed, exit the intro
           _exitIntro.call(self, targetElm);
-          //check if any callback is defined
-          if (self._introExitCallback != undefined) {
-            self._introExitCallback.call(self);
-          }
         } else if(e.keyCode === 37) {
           //left arrow
           _previousStep.call(self);
@@ -342,6 +338,14 @@
    * @param {Object} targetElement
    */
   function _exitIntro(targetElement) {
+    // call any defined on-exit call back
+    if (this._introExitCallback != undefined) {
+      // a return of false cancels the exit
+      if(this._introExitCallback.call(self) === false) {
+        return;
+      }
+    }
+
     //remove overlay layer from the page
     var overlayLayer = targetElement.querySelector('.introjs-overlay');
 
@@ -1073,11 +1077,6 @@
     overlayLayer.onclick = function() {
       if (self._options.exitOnOverlayClick == true) {
         _exitIntro.call(self, targetElm);
-
-        //check if any callback is defined
-        if (self._introExitCallback != undefined) {
-          self._introExitCallback.call(self);
-        }
       }
     };
 
