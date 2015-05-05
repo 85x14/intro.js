@@ -283,22 +283,20 @@
    * @method _nextStep
    */
   function _nextStep() {
+
     this._direction = 'forward';
 
     if (typeof (this._currentStep) === 'undefined') {
       this._currentStep = 0;
-    } else {
-      ++this._currentStep;
-    }
-
-    if ((this._introItems.length) <= this._currentStep) {
-      //end of the intro
-      //check if any callback is defined
+    } else if(this._currentStep >= this._introItems.length-1) {
+      // already at end of the intro: exit
+      _exitIntro.call(this, this._targetElement);
       if (typeof (this._introCompleteCallback) === 'function') {
         this._introCompleteCallback.call(this);
       }
-      _exitIntro.call(this, this._targetElement);
       return;
+    } else {
+      ++this._currentStep;
     }
 
     var nextStep = this._introItems[this._currentStep];
@@ -856,9 +854,7 @@
       var nextTooltipButton = document.createElement('a');
 
       nextTooltipButton.onclick = function() {
-        if (self._introItems.length - 1 != self._currentStep) {
-          _nextStep.call(self);
-        }
+        _nextStep.call(self);
       };
 
       nextTooltipButton.href = 'javascript:void(0);';
@@ -919,15 +915,18 @@
     if (this._currentStep == 0 && this._introItems.length > 1) {
       prevTooltipButton.className = 'introjs-button introjs-prevbutton introjs-disabled';
       prevTooltipButton.tabIndex = '-1';
+      nextTooltipButton.innerHTML = this._options.nextLabel;
       nextTooltipButton.className = 'introjs-button introjs-nextbutton';
       skipTooltipButton.innerHTML = this._options.skipLabel;
     } else if (this._introItems.length - 1 == this._currentStep || this._introItems.length == 1) {
-      skipTooltipButton.innerHTML = this._options.doneLabel;
+      skipTooltipButton.innerHTML = '';
       prevTooltipButton.className = 'introjs-button introjs-prevbutton';
-      nextTooltipButton.className = 'introjs-button introjs-nextbutton introjs-disabled';
+      nextTooltipButton.innerHTML = this._options.doneLabel;
+      nextTooltipButton.className = 'introjs-button introjs-nextbutton';
       nextTooltipButton.tabIndex = '-1';
     } else {
       prevTooltipButton.className = 'introjs-button introjs-prevbutton';
+      nextTooltipButton.innerHTML = this._options.nextLabel;
       nextTooltipButton.className = 'introjs-button introjs-nextbutton';
       skipTooltipButton.innerHTML = this._options.skipLabel;
     }
