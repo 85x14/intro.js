@@ -65,7 +65,9 @@
       /* Precedence of positions, when auto is enabled */
       positionPrecedence: ["bottom", "top", "right", "left"],
       /* Disable an interaction with element? */
-      disableInteraction: false
+      disableInteraction: false,
+      /* enable animated transitions */
+      animateTransitions: true
     };
   }
 
@@ -358,7 +360,7 @@
       if (overlayLayer.parentNode) {
         overlayLayer.parentNode.removeChild(overlayLayer);
       }
-    }, 500);
+    }, (this._options.animateTransitions ? 500 : 0));
 
     //remove all helper layers
     var helperLayer = targetElement.querySelector('.introjs-helperLayer');
@@ -449,12 +451,19 @@
     }
 
     tooltipLayer.className = ('introjs-tooltip ' + tooltipCssClass).replace(/^\s+|\s+$/g, '');
+    if(this._options.animateTransitions) {
+        tooltipLayer.className += ' introjs-transition-short';
+    }
 
     // also apply any custom css class for a step to the helper number layer
     helperNumberLayer.className = 'introjs-helperNumberLayer '
     if(currentStepObj.tooltipClass) {
       helperNumberLayer.className += ' ' + currentStepObj.tooltipClass;
     }
+    if(this._options.animateTransitions) {
+      helperNumberLayer.className += ' introjs-transition';
+    }
+
 
     //custom css class for tooltip boxes
     var tooltipCssClass = this._options.tooltipClass;
@@ -694,6 +703,10 @@
     if (typeof (this._options.highlightClass) === 'string') {
       highlightClass += (' ' + this._options.highlightClass);
     }
+    // check for transitions enabled
+    if(this._options.animateTransitions) {
+      highlightClass += ' introjs-transition';
+    }
 
     if (oldHelperLayer != null) {
       var oldHelperNumberLayer = oldReferenceLayer.querySelector('.introjs-helperNumberLayer'),
@@ -767,7 +780,7 @@
           //still in the tour, focus on next
           nextTooltipButton.focus();
         }
-      }, 350);
+      }, (this._options.animateTransitions ? 350 : 0));
 
     } else {
       var helperLayer       = document.createElement('div'),
@@ -780,7 +793,11 @@
           buttonsLayer      = document.createElement('div');
 
       helperLayer.className = highlightClass;
+
       referenceLayer.className = 'introjs-tooltipReferenceLayer';
+      if(this._options.animateTransitions) {
+        referenceLayer.className += ' introjs-transition';
+      }
 
       //set new position to helper layer
       _setHelperLayerPosition.call(self, helperLayer);
@@ -800,7 +817,6 @@
       if (this._options.showBullets === false) {
         bulletsLayer.style.display = 'none';
       }
-
 
       var ulContainer = document.createElement('ul');
 
@@ -1059,6 +1075,9 @@
 
     //set css class name
     overlayLayer.className = 'introjs-overlay';
+    if(this._options.animateTransitions) {
+      overlayLayer.className += ' introjs-transition';
+    }
 
     //check if the target element is body, we should calculate the size of overlay layer in a better way
     if (targetElm.tagName.toLowerCase() === 'body') {
@@ -1084,7 +1103,7 @@
     setTimeout(function() {
       styleText += 'opacity: ' + self._options.overlayOpacity.toString() + ';';
       overlayLayer.setAttribute('style', styleText);
-    }, 10);
+    }, (this._options.animateTransitions ? 10 : 0));
 
     return true;
   }
