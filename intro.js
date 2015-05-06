@@ -450,6 +450,12 @@
 
     tooltipLayer.className = ('introjs-tooltip ' + tooltipCssClass).replace(/^\s+|\s+$/g, '');
 
+    // also apply any custom css class for a step to the helper number layer
+    helperNumberLayer.className = 'introjs-helperNumberLayer '
+    if(currentStepObj.tooltipClass) {
+      helperNumberLayer.className += ' ' + currentStepObj.tooltipClass;
+    }
+
     //custom css class for tooltip boxes
     var tooltipCssClass = this._options.tooltipClass;
 
@@ -881,10 +887,6 @@
       skipTooltipButton.onclick = function() {
         if (self._introItems.length - 1 == self._currentStep && typeof (self._introCompleteCallback) === 'function') {
           self._introCompleteCallback.call(self);
-        }
-
-        if (self._introItems.length - 1 != self._currentStep && typeof (self._introExitCallback) === 'function') {
-          self._introExitCallback.call(self);
         }
 
         _exitIntro.call(self, self._targetElement);
